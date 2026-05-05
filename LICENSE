@@ -1,0 +1,25 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 Bjoern Kindler
+
+You are free to:
+
+  Share — copy and redistribute the material in any medium or format
+  Adapt — remix, transform, and build upon the material for any purpose,
+          even commercially.
+
+Under the following terms:
+
+  Attribution — You must give appropriate credit, provide a link to the
+                license, and indicate if changes were made. Cite as:
+
+                Kindler, Bjoern (2026). Whisper.cpp on Apple Silicon —
+                Reproducible Benchmarks. Run <run-id>.
+                https://github.com/mundwerk-app/whisper-metal-benchmark
+
+Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Note on the underlying software: whisper.cpp itself is licensed under MIT
+by Georgi Gerganov and contributors (see https://github.com/ggerganov/whisper.cpp).
+This repository contains only measurement data, methodology, and accompanying
+analysis — not whisper.cpp source code.
