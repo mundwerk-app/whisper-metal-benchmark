@@ -1,47 +1,47 @@
 # Results Summary
 
-Aggregierte Ergebnisse aller Mess-Läufe. Neueste oben.
+Aggregated results across all measurement runs. Newest first.
 
-## Lauf-Index
+## Run Index
 
-| Run-ID | Datum | Hardware | Whisper.cpp | Modelle | Status |
-|--------|-------|----------|-------------|---------|--------|
-| [2026-05-05-r01](data/2026-05-05-r01/) | 2026-05-05 | Apple M3 Ultra (80 GPU cores, 512 GB) | v1.8.4 | tiny · base · small · medium · large-v3-turbo | ✅ Abgeschlossen |
+| Run ID | Date | Hardware | whisper.cpp | Models | Status |
+|--------|------|----------|-------------|--------|--------|
+| [2026-05-05-r01](data/2026-05-05-r01/) | 2026-05-05 | Apple M3 Ultra (80 GPU cores, 512 GB) | v1.8.4 | tiny · base · small · medium · large-v3-turbo | ✅ Complete |
 
-## Apple Silicon Übersicht (Realtime-Faktor je Modell)
+## Apple Silicon Overview (Real-Time Factor per Model)
 
-> Realtime-Faktor = wie viele Sekunden Audio pro Sekunde Wall-Clock verarbeitet werden. Höher = schneller. Median über 3 Läufe.
+> Real-time factor = how many seconds of audio are processed per second of wall-clock time. Higher = faster. Median over 3 runs.
 
 | Hardware | tiny | base | small | medium | large-v3-turbo |
 |----------|------|------|-------|--------|----------------|
 | M3 Ultra (80 GPU) | 80.9× | 68.1× | 35.5× | 15.4× | 17.7× |
 | *M1 / M2 / M3 base / Pro / Max* | *PR welcome* | | | | |
 
-## Headline-Erkenntnisse (Stand 2026-05-05)
+## Headline Findings (as of 2026-05-05)
 
-1. **`large-v3-turbo` schlägt `medium`** auf M3 Ultra: 17.7× vs 15.4× Realtime, bei vergleichbarer Modellgröße. Für produktives Diktat = der Sweet-Spot.
-2. **Selbst `tiny` läuft 80× real-time** — auf der Top-End-M3-Ultra-Hardware ist Inference niemals der Bottleneck, nur Model-Load (einmalig, <2 s für medium-tier).
-3. **Skalierung** der Latenz in ms/Wort ist nahezu linear in Modellgröße bis `medium`; `large-v3-turbo` durchbricht das Muster durch reduzierten Decoder.
+1. **`large-v3-turbo` beats `medium`** on M3 Ultra: 17.7× vs 15.4× real-time, at comparable model size on disk. For productive dictation = the sweet spot.
+2. **Even `tiny` runs at 80× real-time** — on top-end M3 Ultra hardware, inference is never the bottleneck, only model load (one-time, <2 s for medium tier).
+3. **Latency scaling** in ms/word is nearly linear in model size up to `medium`; `large-v3-turbo` breaks the pattern via reduced decoder.
 
-## Methodik
+## Methodology
 
-Siehe [`methodology.md`](methodology.md). Wichtigste Punkte:
+See [`methodology.md`](methodology.md). Key points:
 
-- whisper.cpp `-DGGML_METAL=ON -DGGML_ACCELERATE=ON -DCMAKE_BUILD_TYPE=Release`
-- 3 Mess-Läufe pro Modell × Sample, Median berichtet (kein Mittelwert — robust gegen Ausreißer)
-- JFK-Sample (11 s, Englisch, 22 Worte) als Referenz
+- whisper.cpp built with `-DGGML_METAL=ON -DGGML_ACCELERATE=ON -DCMAKE_BUILD_TYPE=Release`
+- 3 measurement runs per model × sample, median reported (no mean — robust against outliers)
+- JFK sample (11 s, English, 22 words) as reference
 
-## Mitwirken
+## Contributing
 
-Eigene Messungen auf weiteren Apple-Silicon-Konfigurationen sind willkommen — bitte als Pull Request mit:
+Measurements on additional Apple Silicon configurations are welcome — please submit a Pull Request with:
 
-1. Befüllter `data/<YYYY-MM-DD-rNN>/results.json` + `system.json` (Schema siehe `data/2026-05-05-r01/`)
-2. `summary.md` mit Headline-Findings
-3. Reproduzierbare Aufruf-Sequenz dokumentiert
+1. Filled `data/<YYYY-MM-DD-rNN>/results.json` + `system.json` (schema in `data/2026-05-05-r01/`)
+2. `summary.md` with headline findings
+3. Documented reproducible invocation sequence
 
-Besonders gesucht: M1, M1 Pro/Max, M2, M2 Pro/Max, M3, M3 Pro/Max, M4 Familie.
+Particularly wanted: M1, M1 Pro/Max, M2, M2 Pro/Max, M3, M3 Pro/Max, M4 family.
 
-## Zitieren
+## Citation
 
 > Kindler, Bjoern (2026). *Whisper.cpp on Apple Silicon — Reproducible Benchmarks.*
 > Run `<run-id>`.
@@ -49,4 +49,4 @@ Besonders gesucht: M1, M1 Pro/Max, M2, M2 Pro/Max, M3, M3 Pro/Max, M4 Familie.
 
 ---
 
-**Stand:** 2026-05-05 · **Maintainer:** Bjoern Kindler · **Lizenz:** [CC-BY-4.0](LICENSE)
+**As of:** 2026-05-05 · **Maintainer:** Bjoern Kindler · **License:** [CC-BY-4.0](LICENSE)

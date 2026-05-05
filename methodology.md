@@ -1,21 +1,21 @@
 # Methodology
 
-Versuchsaufbau für reproduzierbare Whisper.cpp-Benchmarks auf Apple Silicon.
+Test setup for reproducible whisper.cpp benchmarks on Apple Silicon.
 
-## 1. Test-Konfiguration
+## 1. Test Configuration
 
-### 1.1 Software-Stack
+### 1.1 Software Stack
 
-| Komponente | Version |
-|------------|---------|
-| macOS | 26.x (jeweils aktuell zum Messzeitpunkt, dokumentiert pro Lauf) |
-| whisper.cpp | tagged release (siehe pro Lauf in `data/<run>/system.json`) |
-| Modell-Quelle | <https://huggingface.co/ggerganov/whisper.cpp> |
-| Build-Flags | `WHISPER_METAL=1`, `-O3`, ARM64 |
+| Component | Version |
+|-----------|---------|
+| macOS | 26.x (current at measurement time, recorded per run) |
+| whisper.cpp | tagged release (recorded per run in `data/<run>/system.json`) |
+| Model source | <https://huggingface.co/ggerganov/whisper.cpp> |
+| Build flags | `WHISPER_METAL=1`, `-O3`, ARM64 |
 
-### 1.2 Hardware-Profil pro Lauf
+### 1.2 Hardware Profile per Run
 
-Pro Lauf wird ein Hardware-Profil als JSON erfasst:
+Each run records a hardware profile as JSON:
 
 ```json
 {
@@ -29,54 +29,54 @@ Pro Lauf wird ein Hardware-Profil als JSON erfasst:
 }
 ```
 
-Quelle: `system_profiler SPHardwareDataType` + `pmset -g thermlog`.
+Source: `system_profiler SPHardwareDataType` + `pmset -g thermlog`.
 
-## 2. Audio-Samples
+## 2. Audio Samples
 
-Drei kuratierte Sample-Sets, jeweils in 10 s, 30 s, 60 s, 5 min Längen:
+Three curated sample sets, each in 10 s, 30 s, 60 s, and 5 min lengths:
 
-- **DE-pure** — Standarddeutsch, klare Aussprache, neutraler Inhalt (Nachrichtensprecher-Stil)
-- **EN-pure** — American English, neutraler Inhalt
-- **DE-EN-mixed** — Deutsch mit englischen Fachbegriffen (Code-Switching) — primärer Zielfall für Mundwerk
+- **DE-pure** — Standard German, clear pronunciation, neutral content (news anchor style)
+- **EN-pure** — American English, neutral content
+- **DE-EN-mixed** — German with English technical terms (code-switching) — Mundwerk's primary target case
 
-Sample-Quellen werden als reproduzierbare Audiofiles in `data/samples/` abgelegt (CC-BY-Lizenz oder Eigenproduktion).
+Sample sources are stored as reproducible audio files in `data/samples/` (CC-BY licensed or self-produced).
 
-Alle Samples werden in 16 kHz, 16-bit PCM, mono normiert (Standard-Whisper-Eingang) — Konvertierung via `ffmpeg -ar 16000 -ac 1 -c:a pcm_s16le`.
+All samples are normalised to 16 kHz, 16-bit PCM, mono (the standard Whisper input) — converted via `ffmpeg -ar 16000 -ac 1 -c:a pcm_s16le`.
 
-## 3. Mess-Prozedur
+## 3. Measurement Procedure
 
-Pro Kombination (Hardware × Modell × Sample × Quantisierung):
+Per combination (hardware × model × sample × quantisation):
 
-1. **Warm-up-Run:** 1 Lauf wird verworfen (Modell wird geladen, Caches werden warm)
-2. **5 Mess-Runs:** Wall-Clock-Zeit, Peak-RSS, GPU-Utilization protokolliert
-3. **Reporting:** Median + Min/Max der 5 Runs (kein Mittelwert — robust gegen Ausreißer)
+1. **Warm-up run:** 1 run discarded (model loads, caches warm up)
+2. **5 measurement runs:** wall-clock time, peak RSS, GPU utilisation logged
+3. **Reporting:** median + min/max of the 5 runs (no mean — robust against outliers)
 
-Zwischen Runs: 30 s Cooldown, um thermal-throttling-Effekte zu vermeiden. Vor jedem Sample-Set: `pmset -g thermlog` prüfen, bei `thermal_state != nominal` wird eine Pause eingelegt.
+Between runs: 30 s cooldown to avoid thermal-throttling effects. Before each sample set: check `pmset -g thermlog`; if `thermal_state != nominal`, insert a pause.
 
-## 4. Mess-Werkzeuge
+## 4. Measurement Tools
 
-| Größe | Tool |
-|-------|------|
-| Wall-Clock | `time` builtin (`real` Wert) |
-| Peak-RSS | `/usr/bin/time -l` (`maximum resident set size`) |
-| GPU-Utilization | `powermetrics --samplers gpu_power -i 100` |
-| Energy | `powermetrics --samplers cpu_power,gpu_power -i 100` (Joule via Δ × Δt) |
+| Metric | Tool |
+|--------|------|
+| Wall-clock | `time` builtin (`real` value) |
+| Peak RSS | `/usr/bin/time -l` (`maximum resident set size`) |
+| GPU utilisation | `powermetrics --samplers gpu_power -i 100` |
+| Energy | `powermetrics --samplers cpu_power,gpu_power -i 100` (joules via Δ × Δt) |
 | Thermal | `pmset -g thermlog` |
 
-## 5. WER-Bestimmung
+## 5. WER Determination
 
-Pro Sample existiert ein menschlich verifiziertes Referenztranskript. WER wird via [`jiwer`](https://github.com/jitsi/jiwer) berechnet:
+Each sample has a human-verified reference transcript. WER is computed via [`jiwer`](https://github.com/jitsi/jiwer):
 
 ```python
 from jiwer import wer
 wer(reference_text, hypothesis_text)
 ```
 
-Stichprobenbreite: ein WER-Wert pro Modell × Sample-Length × Sample-Sprache (also nicht pro Run wiederholt, da Whisper mit Greedy-Decoding deterministisch ist).
+Sample width: one WER value per model × sample length × sample language (not repeated per run, since Whisper with greedy decoding is deterministic).
 
-## 6. Daten-Schema
+## 6. Data Schema
 
-CSV in `data/<run-id>/results.csv`:
+CSV at `data/<run-id>/results.csv`:
 
 ```csv
 run_id,timestamp_utc,chip,gpu_cores,memory_gb,model,quantization,sample_id,sample_length_s,sample_lang,backend,run_index,wall_clock_s,peak_rss_mb,gpu_util_avg_percent,energy_joule
@@ -84,23 +84,23 @@ run_id,timestamp_utc,chip,gpu_cores,memory_gb,model,quantization,sample_id,sampl
 ...
 ```
 
-## 7. Veröffentlichung
+## 7. Publication
 
-Nach jedem Lauf:
+After each run:
 
-- Roh-CSV in `data/<run-id>/`
-- Hardware-Profil-JSON in `data/<run-id>/system.json`
-- Markdown-Zusammenfassung in `data/<run-id>/summary.md`
-- Aggregat-Tabelle in `results-summary.md` (oberster Eintrag = neueste Messung)
+- Raw CSV in `data/<run-id>/`
+- Hardware profile JSON in `data/<run-id>/system.json`
+- Markdown summary in `data/<run-id>/summary.md`
+- Aggregate table in `results-summary.md` (top entry = newest measurement)
 
-Alte Läufe werden nie überschrieben — sie dokumentieren auch Performance-Drift über whisper.cpp-Versionen.
+Old runs are never overwritten — they also document performance drift across whisper.cpp versions.
 
-## 8. Bekannte Limitierungen
+## 8. Known Limitations
 
-- **Nicht-vergleichbar mit Server-GPUs.** Diese Messungen dokumentieren ausschließlich Apple Silicon. NVIDIA-A100-Werte sind nicht das Ziel; sie sind in zahllosen anderen Quellen verfügbar.
-- **Keine Audio-Quality-Variationen.** Tests laufen mit sauberem Studio-Audio. Real-World-Audio mit Hintergrundgeräuschen wird nicht gemessen — würde WER vergleichlos verzerren und ist ohnehin vorgelagertes VAD-Thema.
-- **Stichprobengröße ist klein.** Ziel ist „Größenordnung verstehen", nicht „Statistische Signifikanz auf 95 %-Niveau". Wer eine wissenschaftliche Auswertung braucht, nehme dieses Material als Ausgangspunkt für eigene erweiterte Messungen.
+- **Not comparable to server GPUs.** These measurements document Apple Silicon only. NVIDIA A100 figures are not the goal; they are available in many other sources.
+- **No audio-quality variations.** Tests run with clean studio audio. Real-world audio with background noise is not measured — it would distort WER incomparably and is a separate VAD topic anyway.
+- **Sample size is small.** The goal is "understand the order of magnitude," not "statistical significance at the 95 % level." Anyone needing a scientific evaluation should use this material as a starting point for extended own measurements.
 
 ---
 
-**Stand:** 2026-05-05 · **Autor:** Bjoern Kindler · **Lizenz:** [CC-BY-4.0](LICENSE)
+**As of:** 2026-05-05 · **Author:** Bjoern Kindler · **License:** [CC-BY-4.0](LICENSE)

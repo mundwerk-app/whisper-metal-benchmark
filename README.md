@@ -1,64 +1,64 @@
 # Whisper.cpp on Apple Silicon — Reproducible Benchmarks
 
-Reproduzierbare Messreihen zur Performance von [whisper.cpp](https://github.com/ggerganov/whisper.cpp) mit Metal-GPU-Backend auf Apple Silicon.
+Reproducible measurement series of [whisper.cpp](https://github.com/ggerganov/whisper.cpp) performance with the Metal GPU backend on Apple Silicon.
 
-Veröffentlicht im Rahmen des Mundwerk-Projekts (<https://mundwerkapp.de>) — eine lokale Diktiersoftware, die whisper.cpp produktiv einsetzt. Diese Messungen sollen Entwicklern, Reviewern und Entscheidern eine ehrliche Datengrundlage geben, um Erwartungen an On-Device-Whisper realistisch einzuschätzen.
+Published as part of the Mundwerk project (<https://mundwerkapp.de>) — a local dictation app that uses whisper.cpp in production. These measurements give developers, reviewers, and decision-makers an honest data foundation for setting realistic expectations about on-device Whisper.
 
 ## Status
 
-✅ **Lauf 1 abgeschlossen** — Apple M3 Ultra Baseline (2026-05-05). Siehe [`data/2026-05-05-r01/`](data/2026-05-05-r01/) für Rohdaten + Summary.
+✅ **Run 1 complete** — Apple M3 Ultra baseline (2026-05-05). See [`data/2026-05-05-r01/`](data/2026-05-05-r01/) for raw data and summary.
 
-## Inhalt
+## Contents
 
-- [`results-summary.md`](results-summary.md) — Aggregat-Tabelle + Headline-Findings
-- [`methodology.md`](methodology.md) — Versuchsaufbau, Hardware-Spezifikation, Messparameter
-- [`data/`](data/) — Rohdaten je Lauf (`results.json`, `results.md`, `system.json`, `summary.md`)
+- [`results-summary.md`](results-summary.md) — Aggregate table + headline findings
+- [`methodology.md`](methodology.md) — Test setup, hardware specification, measurement parameters
+- [`data/`](data/) — Raw data per run (`results.json`, `results.md`, `system.json`, `summary.md`)
 
-## Headline-Resultate Apple M3 Ultra (11 s JFK-Sample, EN, 3 Mess-Läufe)
+## Headline Results — Apple M3 Ultra (11 s JFK sample, EN, 3 measurement runs)
 
-| Modell | Modellgröße | Median Inference | Realtime-Faktor |
-|--------|-------------|------------------|-----------------|
+| Model | Model size | Median inference | Real-time factor |
+|-------|------------|------------------|------------------|
 | `tiny` | 74 MB | 136 ms | **80.9× RT** |
 | `base` | 141 MB | 162 ms | 68.1× RT |
 | `small` | 465 MB | 310 ms | 35.5× RT |
 | `medium` | 1463 MB | 714 ms | 15.4× RT |
 | `large-v3-turbo` | 1549 MB | 623 ms | **17.7× RT** |
 
-Auffällig: `large-v3-turbo` ist auf M3 Ultra **schneller als `medium`** trotz größerer Modelldatei — Turbo-Variante nutzt reduzierten Decoder und ist für interaktives Diktat der Sweet-Spot.
+Notable: on M3 Ultra, `large-v3-turbo` is **faster than `medium`** despite the larger model file — the turbo variant uses a reduced decoder and is the sweet spot for interactive dictation.
 
-## Geplante Messdimensionen
+## Planned Measurement Dimensions
 
-1. **Modellgröße:** tiny, base, small, medium, large-v3
-2. **Hardware:** M1, M1 Pro, M1 Max, M2, M2 Pro, M2 Max, M3, M3 Pro, M3 Max, M4 (mindestens je eine Variante)
-3. **Eingangs-Audio:** 10 s, 30 s, 60 s, 5 min Samples (deutsch, englisch, deutsch-englisch gemischt)
-4. **Backend-Modi:** Metal-GPU (Standard), CPU-only (Vergleichsbasis), CoreML (falls verfügbar)
-5. **Quantisierung:** F16, Q8, Q5_K, Q4_K (sofern Modell verfügbar)
+1. **Model size:** tiny, base, small, medium, large-v3-turbo, large-v3
+2. **Hardware:** M1, M1 Pro, M1 Max, M2, M2 Pro, M2 Max, M3, M3 Pro, M3 Max, M3 Ultra, M4 (at least one variant per family)
+3. **Input audio:** 10 s, 30 s, 60 s, 5 min samples (German, English, mixed German-English)
+4. **Backend modes:** Metal GPU (default), CPU-only (comparison baseline), CoreML (where applicable)
+5. **Quantisation:** F16, Q8, Q5_K, Q4_K (where models are available)
 
-## Messziele
+## Measurement Targets
 
-- **Latenz** (Wall-Clock-Zeit von Audio-Ende bis Text-Ergebnis)
-- **Throughput** (Realtime-Faktor: wie viele Audio-Sekunden pro Sekunde Wall-Clock verarbeitet werden)
-- **WER** (Word Error Rate gegen menschlich verifiziertes Transkript) — Stichprobe pro Sample-Set
-- **Energy Use** (über `powermetrics`-Auswertung, Joule pro 60 s Audio)
-- **Peak-RAM-Footprint** (über `vm_stat` während Inference)
+- **Latency** (wall-clock time from audio end to text result)
+- **Throughput** (real-time factor: how many seconds of audio processed per second of wall-clock time)
+- **WER** (Word Error Rate against human-verified transcript) — sampled per sample-set
+- **Energy use** (via `powermetrics` analysis, joules per 60 s of audio)
+- **Peak RAM footprint** (via `vm_stat` during inference)
 
-## Mitwirken
+## Contributing
 
-Eigene Messungen auf weiteren Hardware-Konfigurationen sind willkommen — bitte als Pull Request mit:
+Measurements on additional hardware configurations are welcome — please submit a Pull Request with:
 
-1. Befüllter Data-CSV nach Schema in `methodology.md` §6
-2. System-Profil (Output von `system_profiler SPHardwareDataType`, anonymisiert)
-3. Messpipeline-Aufruf-Log
+1. Filled `data/<YYYY-MM-DD-rNN>/results.json` and `system.json` (schema in `data/2026-05-05-r01/`)
+2. `summary.md` with headline findings
+3. Reproducible invocation sequence documented
 
-Konflikt zur produktiv-App: Mundwerk selbst ist closed-source. Diese Messungen dokumentieren ausschließlich den Open-Source-Inference-Layer (whisper.cpp), der auch ohne Mundwerk reproduzierbar ist.
+Conflict to the production app: Mundwerk itself is closed-source. These measurements only document the open-source inference layer (whisper.cpp), which is reproducible standalone.
 
-## Lizenz
+## License
 
-[Creative Commons Attribution 4.0](LICENSE) für Daten und Texte. Bitte zitieren als:
+[Creative Commons Attribution 4.0](LICENSE) for data and text. Please cite as:
 
 > Kindler, Bjoern (2026). *Whisper.cpp on Apple Silicon — Reproducible Benchmarks.*
-> https://github.com/mundwerk-app/whisper-metal-benchmark
+> Run `<run-id>`. https://github.com/mundwerk-app/whisper-metal-benchmark
 
-## Kontakt
+## Contact
 
 **Bjoern Kindler** · <info@kindler-dev.de>
