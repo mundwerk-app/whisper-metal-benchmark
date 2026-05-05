@@ -6,25 +6,25 @@ Veröffentlicht im Rahmen des Mundwerk-Projekts (<https://mundwerkapp.de>) — e
 
 ## Status
 
-🚧 **In Vorbereitung** — Skelett, Methodik und Messplan stehen. Erste vollständige Datenerhebung folgt mit der nächsten App-Release-Welle.
+✅ **Lauf 1 abgeschlossen** — Apple M3 Ultra Baseline (2026-05-05). Siehe [`data/2026-05-05-r01/`](data/2026-05-05-r01/) für Rohdaten + Summary.
 
 ## Inhalt
 
+- [`results-summary.md`](results-summary.md) — Aggregat-Tabelle + Headline-Findings
 - [`methodology.md`](methodology.md) — Versuchsaufbau, Hardware-Spezifikation, Messparameter
-- [`data/`](data/) — CSV-Rohdaten der Messreihen (kommen ab Lauf 1)
-- [`results-summary.md`](results-summary.md) — Zusammenfassende Tabellen und Plots *(folgt)*
+- [`data/`](data/) — Rohdaten je Lauf (`results.json`, `results.md`, `system.json`, `summary.md`)
 
-## Quick-Reference (Vor-Ergebnis aus Mundwerk-Praxis, M2-Klasse)
+## Headline-Resultate Apple M3 Ultra (11 s JFK-Sample, EN, 3 Mess-Läufe)
 
-> Diese Tabelle ist ein **Erwartungswert aus dem App-Einsatz**, keine kontrollierte Messung. Sie wird durch die Benchmark-Daten in `data/` ersetzt, sobald Lauf 1 abgeschlossen ist.
+| Modell | Modellgröße | Median Inference | Realtime-Faktor |
+|--------|-------------|------------------|-----------------|
+| `tiny` | 74 MB | 136 ms | **80.9× RT** |
+| `base` | 141 MB | 162 ms | 68.1× RT |
+| `small` | 465 MB | 310 ms | 35.5× RT |
+| `medium` | 1463 MB | 714 ms | 15.4× RT |
+| `large-v3-turbo` | 1549 MB | 623 ms | **17.7× RT** |
 
-| Modell | Modellgröße auf Disk | RAM-Footprint (geschätzt) | Latenz für 10 s Audio (Realtime-Faktor) |
-|--------|----------------------|---------------------------|------------------------------------------|
-| `tiny`     | ~75 MB | ~0,5 GB | <0,5 s (~20× RT) |
-| `base`     | ~150 MB | ~1 GB | ~1 s (~10× RT) |
-| `small`    | ~500 MB | ~1,5 GB | ~2 s (~5× RT) |
-| `medium`   | ~1,5 GB | ~3 GB | ~3 s (~3,3× RT) |
-| `large-v3` | ~3 GB | ~5 GB | ~4 s (~2,5× RT) |
+Auffällig: `large-v3-turbo` ist auf M3 Ultra **schneller als `medium`** trotz größerer Modelldatei — Turbo-Variante nutzt reduzierten Decoder und ist für interaktives Diktat der Sweet-Spot.
 
 ## Geplante Messdimensionen
 

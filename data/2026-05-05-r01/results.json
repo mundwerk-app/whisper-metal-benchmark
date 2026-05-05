@@ -1,0 +1,88 @@
+{
+  "host": {
+    "platform": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "processor": "arm",
+    "cpu_brand": "Apple M3 Ultra",
+    "macos": "26.4.1"
+  },
+  "sample": {
+    "path": "Libraries/whisper.cpp/samples/jfk.wav",
+    "duration_seconds": 11.0,
+    "language": "en"
+  },
+  "results": [
+    {
+      "model": "tiny",
+      "ok": true,
+      "size_mb": 74.1,
+      "runs": 3,
+      "median_inference_ms": 136.1,
+      "median_wall_seconds": 0.56,
+      "median_word_count": 22,
+      "audio_seconds": 11.0,
+      "real_time_factor": 0.012,
+      "speedup_vs_realtime": 80.85,
+      "ms_per_word": 6.2,
+      "transcript_sample": "And so, my fellow Americans, ask not what your country can do for you, ask what you can do for your country."
+    },
+    {
+      "model": "base",
+      "ok": true,
+      "size_mb": 141.1,
+      "runs": 3,
+      "median_inference_ms": 161.5,
+      "median_wall_seconds": 0.59,
+      "median_word_count": 22,
+      "audio_seconds": 11.0,
+      "real_time_factor": 0.015,
+      "speedup_vs_realtime": 68.11,
+      "ms_per_word": 7.3,
+      "transcript_sample": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country."
+    },
+    {
+      "model": "small",
+      "ok": true,
+      "size_mb": 465.0,
+      "runs": 3,
+      "median_inference_ms": 309.5,
+      "median_wall_seconds": 0.55,
+      "median_word_count": 22,
+      "audio_seconds": 11.0,
+      "real_time_factor": 0.028,
+      "speedup_vs_realtime": 35.54,
+      "ms_per_word": 14.1,
+      "transcript_sample": "And so my fellow Americans, ask not what your country can do for you, ask what you can do for your country."
+    },
+    {
+      "model": "medium",
+      "ok": true,
+      "size_mb": 1462.7,
+      "runs": 3,
+      "median_inference_ms": 713.9,
+      "median_wall_seconds": 1.1,
+      "median_word_count": 22,
+      "audio_seconds": 11.0,
+      "real_time_factor": 0.065,
+      "speedup_vs_realtime": 15.41,
+      "ms_per_word": 32.4,
+      "transcript_sample": "And so, my fellow Americans, ask not what your country can do for you; ask what you can do for your country."
+    },
+    {
+      "model": "large-v3-turbo",
+      "ok": true,
+      "size_mb": 1549.3,
+      "runs": 3,
+      "median_inference_ms": 622.9,
+      "median_wall_seconds": 1.09,
+      "median_word_count": 22,
+      "audio_seconds": 11.0,
+      "real_time_factor": 0.057,
+      "speedup_vs_realtime": 17.66,
+      "ms_per_word": 28.3,
+      "transcript_sample": "And so, my fellow Americans, ask not what your country can do for you, ask what you can do for your country."
+    }
+  ],
+  "timestamp": "2026-05-05T08:12:52.423416+00:00",
+  "runs_per_model": 3
+}

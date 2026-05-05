@@ -1,0 +1,47 @@
+{
+  "run_id": "2026-05-05-r01",
+  "timestamp_utc": "2026-05-05T08:12:52Z",
+  "hardware": {
+    "model_name": "Mac Studio",
+    "model_identifier": "Mac15,14",
+    "chip": "Apple M3 Ultra",
+    "cores_total": 32,
+    "cores_performance": 24,
+    "cores_efficiency": 8,
+    "gpu_cores": 80,
+    "metal_support": "Metal 4",
+    "memory_gb": 512
+  },
+  "operating_system": {
+    "name": "macOS",
+    "version": "26.4.1",
+    "build": "25E253"
+  },
+  "whisper_cpp": {
+    "version": "v1.8.4",
+    "build_flags": "-DGGML_METAL=ON -DGGML_ACCELERATE=ON -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DWHISPER_BUILD_EXAMPLES=ON",
+    "binary_path": "Libraries/whisper.cpp/build-bench/bin/whisper-cli"
+  },
+  "sample": {
+    "path": "Libraries/whisper.cpp/samples/jfk.wav",
+    "description": "JFK inaugural address excerpt — public-domain reference clip from whisper.cpp upstream",
+    "duration_seconds": 11.0,
+    "language": "en",
+    "format": "16-bit PCM mono, 16 kHz",
+    "expected_words": 22
+  },
+  "methodology": {
+    "runs_per_model": 3,
+    "warmup_runs": 0,
+    "metric_aggregation": "median of 3 runs",
+    "thermal_state_check": false,
+    "models": ["tiny", "base", "small", "medium", "large-v3-turbo"]
+  },
+  "limitations": [
+    "Single-host, single-sample run — establishes baseline only.",
+    "No warmup run — first run includes model-load cold-start overhead.",
+    "Thermal-state was not actively monitored.",
+    "Sample is English-only; German and German-English mixed samples follow in future runs.",
+    "M3 Ultra represents top-end Apple Silicon — lower-tier chips (M1/M2/M3 base) will produce slower but proportional results."
+  ]
+}
