@@ -26,6 +26,8 @@ Published as part of the Mundwerk project (<https://mundwerkapp.de>) — a local
 
 Notable: on M3 Ultra, `large-v3-turbo` is **faster than `medium`** despite the larger model file — the turbo variant uses a reduced decoder and is the sweet spot for interactive dictation.
 
+📝 Long-form discussion: [Whisper.cpp on M3 Ultra — what it means for dictation](https://mundwerkapp.de/en/blog/whisper-benchmark-m3-ultra.html) (also [in German](https://mundwerkapp.de/blog/whisper-benchmark-m3-ultra.html))
+
 ## Planned Measurement Dimensions
 
 1. **Model size:** tiny, base, small, medium, large-v3-turbo, large-v3
